@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portal ECV - Login</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f9fc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .highlight {
+      color: #3366ff;
+    }
+
+    .login-container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 350px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    select, input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #3366ff;
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #264fd1;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .link a {
+      color: #3366ff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PORTAL <span class="highlight">ECV</span></h1>
+
+  <div class="login-container">
+    <div class="form-group">
+      <label for="filial">Filial:</label>
+      <select id="filial">
+        <option>Matriz</option>
+        <option>Filial 1</option>
+        <option>Filial 2</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="usuario">Usuário:</label>
+      <input type="text" id="usuario" placeholder="Digite seu usuário">
+    </div>
+
+    <div class="form-group">
+      <label for="senha">Senha:</label>
+      <input type="password" id="senha" placeholder="Digite sua senha">
+    </div>
+
+    <button onclick="fazerLogin()">Entrar</button>
+
+    <div class="link">
+      <a href="#">Esqueceu a senha?</a>
+    </div>
+  </div>
+
+  <script>
+    function fazerLogin() {
+      const filial = document.getElementById('filial').value;
+      const usuario = document.getElementById('usuario').value;
+      const senha = document.getElementById('senha').value;
+
+      alert(`Tentando logar na filial "${filial}" com o usuário "${usuario}"`);
+      // Aqui futuramente você vai conectar com backend, API ou banco de dados
+    }
+  </script>
+
+</body>
+</html>

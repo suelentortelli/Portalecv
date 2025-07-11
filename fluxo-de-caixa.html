@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Fluxo de Caixa - Portal ECV</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f7fb;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #3366ff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background-color: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    input, select, button {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+    }
+
+    button {
+      background-color: #3366ff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #264fd1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f0f3f7;
+      font-weight: 600;
+    }
+
+    .entrada {
+      color: green;
+    }
+
+    .saida {
+      color: red;
+    }
+
+    .saldo {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: right;
+      margin-top: 20px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>PORTAL ECV - Fluxo de Caixa</header>
+
+  <div class="container">
+    <h2>Lançamento de Movimento</h2>
+
+    <div class="form-grid">
+      <input type="date" id="data" />
+      <input type="text" id="descricao" placeholder="Descrição" />
+      <input type="number" id="valor" placeholder="Valor (R$)" />
+      <select id="tipo">
+        <option value="entrada">Entrada</option>
+        <option value="saida">Saída</option>
+      </select>
+    </div>
+
+    <button onclick="adicionarMovimento()">Adicionar Movimento</button>
+
+    <table id="tabela">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Descrição</th>
+          <th>Tipo</th>
+          <th>Valor (R$)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Linhas de movimento aqui -->
+      </tbody>
+    </table>
+
+    <div class="saldo" id="saldoDisplay">
+      Saldo Atual: R$ 0,00
+    </div>
+  </div>
+
+  <script>
+    let movimentos = [];
+
+    function adicionarMovimento() {
+      const data = document.getElementById('data').value;
+      const descricao = document.getElementById('descricao').value;
+      const valor = parseFloat(document.getElementById('valor').value);
+      const tipo = document.getElementById('tipo').value;
+
+      if (!data || !descricao || isNaN(valor)) {
+        alert("Preencha todos os campos corretamente!");
+        return;
+      }
+
+      movimentos.push({ data, descricao, valor, tipo });
+      atualizarTabela();
+    }
+
+    function atualizarTabela() {
+      const tbody = document.querySelector('#tabela tbody');
+      tbody.innerHTML = "";
+      let saldo = 0;
+
+      movimentos.forEach(mov => {
+        const tr = document.createElement('tr');
+        const valorFormatado = mov.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        tr.innerHTML = `
+          <td>${mov.data}</td>
+          <td>${mov.descricao}</td>
+          <td class="${mov.tipo}">${mov.tipo.charAt(0).toUpperCase() + mov.tipo.slice(1)}</td>
+          <td class="${mov.tipo}">${valorFormatado}</td>
+        `;
+
+        tbody.appendChild(tr);
+
+        if (mov.tipo === "entrada") saldo += mov.valor;
+        else saldo -= mov.valor;
+      });
+
+      document.getElementById("saldoDisplay").innerText =
+        "Saldo Atual: " + saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+  </script>
+
+</body>
+</html>

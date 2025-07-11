@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Relatórios Financeiros - Portal ECV</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f7fb;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #3366ff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background-color: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    input, select, button {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+    }
+
+    button {
+      background-color: #3366ff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #264fd1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f0f3f7;
+    }
+
+    .totais {
+      margin-top: 20px;
+      font-weight: bold;
+      text-align: right;
+      color: #444;
+    }
+
+    .entrada {
+      color: green;
+    }
+
+    .saida {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <header>PORTAL ECV - Relatórios Financeiros</header>
+
+  <div class="container">
+    <h2>Filtros do Relatório</h2>
+
+    <div class="form-grid">
+      <input type="date" id="inicio">
+      <input type="date" id="fim">
+      <select id="tipo">
+        <option value="todos">Todos os Tipos</option>
+        <option value="entrada">Entrada</option>
+        <option value="saida">Saída</option>
+        <option value="pagar">Contas a Pagar</option>
+        <option value="receber">Contas a Receber</option>
+      </select>
+      <button onclick="gerarRelatorio()">Gerar Relatório</button>
+    </div>
+
+    <table id="tabelaRelatorio">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Descrição</th>
+          <th>Tipo</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Linhas geradas -->
+      </tbody>
+    </table>
+
+    <div class="totais" id="totalizador">Total: R$ 0,00</div>
+  </div>
+
+  <script>
+    // Dados de exemplo — substitua futuramente por dados reais
+    const movimentos = [
+      { data: "2025-07-01", descricao: "Recebimento vistoria", tipo: "entrada", valor: 250 },
+      { data: "2025-07-02", descricao: "Aluguel da unidade", tipo: "saida", valor: 1200 },
+      { data: "2025-07-04", descricao: "Conta de energia", tipo: "pagar", valor: 380 },
+      { data: "2025-07-05", descricao: "Venda pendente João", tipo: "receber", valor: 400 },
+      { data: "2025-07-08", descricao: "Recebimento vistoria", tipo: "entrada", valor: 300 },
+    ];
+
+    function gerarRelatorio() {
+      const inicio = document.getElementById("inicio").value;
+      const fim = document.getElementById("fim").value;
+      const tipo = document.getElementById("tipo").value;
+
+      const tbody = document.querySelector("#tabelaRelatorio tbody");
+      tbody.innerHTML = "";
+
+      let total = 0;
+
+      movimentos.forEach(mov => {
+        const dentroDoPeriodo = (!inicio || mov.data >= inicio) && (!fim || mov.data <= fim);
+        const tipoValido = tipo === "todos" || mov.tipo === tipo;
+
+        if (dentroDoPeriodo && tipoValido) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${mov.data}</td>
+            <td>${mov.descricao}</td>
+            <td class="${mov.tipo}">${mov.tipo}</td>
+            <td>R$ ${mov.valor.toFixed(2)}</td>
+          `;
+          tbody.appendChild(tr);
+          total += mov.valor;
+        }
+      });
+
+      document.getElementById("totalizador").innerText = 
+        "Total: R$ " + total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+  </script>
+
+</body>
+</html>

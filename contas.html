@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Contas a Pagar e a Receber - Portal ECV</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f7fb;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #3366ff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background-color: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    input, select, button {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+    }
+
+    button {
+      background-color: #3366ff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #264fd1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f0f3f7;
+    }
+
+    .pagar { color: red; }
+    .receber { color: green; }
+    .pago, .recebido { color: gray; }
+    .vencido {
+      background-color: #ffe0e0;
+      font-weight: bold;
+    }
+
+    .filters {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>PORTAL ECV - Contas a Pagar e a Receber</header>
+
+  <div class="container">
+    <h2>Lançamento de Contas</h2>
+
+    <div class="form-grid">
+      <input type="date" id="data" />
+      <input type="text" id="descricao" placeholder="Descrição" />
+      <input type="number" id="valor" placeholder="Valor (R$)" />
+      <select id="tipo">
+        <option value="pagar">Pagar</option>
+        <option value="receber">Receber</option>
+      </select>
+      <select id="status">
+        <option value="pendente">Pendente</option>
+        <option value="pago">Pago</option>
+        <option value="recebido">Recebido</option>
+      </select>
+    </div>
+
+    <button onclick="adicionarConta()">Adicionar Conta</button>
+
+    <div class="filters">
+      <select id="filtroTipo" onchange="atualizarTabela()">
+        <option value="todos">Todos os Tipos</option>
+        <option value="pagar">Pagar</option>
+        <option value="receber">Receber</option>
+      </select>
+
+      <select id="filtroStatus" onchange="atualizarTabela()">
+        <option value="todos">Todos os Status</option>
+        <option value="pendente">Pendente</option>
+        <option value="pago">Pago</option>
+        <option value="recebido">Recebido</option>
+      </select>
+    </div>
+
+    <table id="tabela">
+      <thead>
+        <tr>
+          <th>Vencimento</th>
+          <th>Descrição</th>
+          <th>Tipo</th>
+          <th>Status</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Linhas aqui -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const contas = [];
+
+    function adicionarConta() {
+      const data = document.getElementById("data").value;
+      const descricao = document.getElementById("descricao").value;
+      const valor = parseFloat(document.getElementById("valor").value);
+      const tipo = document.getElementById("tipo").value;
+      const status = document.getElementById("status").value;
+
+      if (!data || !descricao || isNaN(valor)) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      contas.push({ data, descricao, valor, tipo, status });
+      atualizarTabela();
+    }
+
+    function atualizarTabela() {
+      const tbody = document.querySelector("#tabela tbody");
+      tbody.innerHTML = "";
+
+      const filtroTipo = document.getElementById("filtroTipo").value;
+      const filtroStatus = document.getElementById("filtroStatus").value;
+      const hoje = new Date().toISOString().split("T")[0];
+
+      contas.forEach(conta => {
+        const vencida = conta.data < hoje && conta.status === "pendente";
+        if ((filtroTipo === "todos" || conta.tipo === filtroTipo) &&
+            (filtroStatus === "todos" || conta.status === filtroStatus)) {
+
+          const tr = document.createElement("tr");
+          if (vencida) tr.classList.add("vencido");
+
+          const valorFormatado = conta.valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+          tr.innerHTML = `
+            <td>${conta.data}</td>
+            <td>${conta.descricao}</td>
+            <td class="${conta.tipo}">${conta.tipo}</td>
+            <td class="${conta.status}">${conta.status}</td>
+            <td>${valorFormatado}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
